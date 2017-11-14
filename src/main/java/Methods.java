@@ -15,6 +15,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +35,7 @@ import static data.Data.agentChrome;
 import static data.Data.agentPD;
 import static helpMethods.HelpMethods.handleLogoutWindow;
 import static methods.Methods.driver;
-import static methods.Methods.fast;
+
 import static methods.Methods.password;
 
 /**
@@ -44,6 +46,7 @@ public class Methods {
     private static final Logger log = Logger.getLogger("Methods");
     public static String browser;
     public static boolean onJenkins;
+    public static boolean fast = false;
     static boolean killProcess = true;
     static boolean debug = true;
     static int chrome_maximize_count = 0;
@@ -74,11 +77,11 @@ public class Methods {
                 chromeOptions.addArguments("--start-maximized");
                 driver = new ChromeDriver(chromeOptions);
                 //chromeYellow
-                if(chrome_maximize_count==0){
-                Screen screen = new Screen();
-                org.sikuli.script.Pattern chromeIcon = new org.sikuli.script.Pattern("C:\\SikuliImages\\chromeYellow.png");
-                screen.wait(chromeIcon, 2);
-                screen.click(chromeIcon);
+                if (chrome_maximize_count == 0) {
+                    Screen screen = new Screen();
+                    org.sikuli.script.Pattern chromeIcon = new org.sikuli.script.Pattern("C:\\SikuliImages\\chromeYellow.png");
+                    screen.wait(chromeIcon, 2);
+                    screen.click(chromeIcon);
                     chrome_maximize_count++;
                 }
               /*  Thread.sleep(500);
@@ -86,7 +89,7 @@ public class Methods {
                /* ChromeOptions options = new ChromeOptions();
                 options.addArguments("--start-fullscreen");*/
 
-            } else{
+            } else {
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--start-maximized");
                 driver = new ChromeDriver(chromeOptions);
@@ -220,7 +223,8 @@ public class Methods {
             WebElement button_Connect = driver.findElement(By.cssSelector("[name='btn_connect']"));
             name.sendKeys(username);
             if (fast == false)
-                password.sendKeys("1");
+                Thread.sleep(1000);
+            password.sendKeys("1");
             button_Connect.click();
             //if(fast ==false);
 
@@ -285,7 +289,7 @@ public class Methods {
     public static WebDriver changeStatus(WebDriver driver, String status) throws UnknownHostException, FindFailed, InterruptedException, UnsupportedEncodingException {
         System.out.println("changeStatus");
         String hostName = InetAddress.getLocalHost().getHostName();
-        if (hostName.equalsIgnoreCase("kv1-it-pc-jtest")&&!browser.equals("chrome")) {
+        if (hostName.equalsIgnoreCase("kv1-it-pc-jtest") && !browser.equals("chrome")) {
             if (status.equalsIgnoreCase("Available")) {
                 Screen screen = new Screen();
                 org.sikuli.script.Pattern currentStatus = new org.sikuli.script.Pattern("C:\\SikuliImages\\currentStatus.png");
@@ -348,7 +352,7 @@ public class Methods {
     public static WebDriver switchLine(WebDriver driver, int line) throws FindFailed, InterruptedException, UnknownHostException {
         System.out.println("switchLine");
         String hostName = InetAddress.getLocalHost().getHostName();
-        if (browser.equals("chrome")&&!hostName.equalsIgnoreCase("kv1-it-pc-jtest")) {
+        if (browser.equals("chrome") && !hostName.equalsIgnoreCase("kv1-it-pc-jtest")) {
             System.out.println("Browser is chrome.");
             WebDriverWait waitForLineElement = new WebDriverWait(driver, 2);
             waitForLineElement.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[id = 'btn_line_" + line + "_span']")));
@@ -359,21 +363,21 @@ public class Methods {
             System.out.println("Line switched by webdriver.");
         } else {
             System.out.println("Browser is not chrome or running on Jenkns.");
-            if(hostName.equalsIgnoreCase("kv1-it-pc-jtest")){
+            if (hostName.equalsIgnoreCase("kv1-it-pc-jtest")) {
                 WebElement lineElement = driver.findElement(By.cssSelector("[id = 'btn_line_" + line + "_span']"));
                 lineElement.sendKeys(Keys.ENTER);
-            }else
-            try {
-                if (driver instanceof JavascriptExecutor) {
-                    ((JavascriptExecutor) driver)
-                            .executeScript("wp_common.wp_ChangeLine(" + line + "); log(event);");
-                    System.out.println("Line switched by javascript.");
+            } else
+                try {
+                    if (driver instanceof JavascriptExecutor) {
+                        ((JavascriptExecutor) driver)
+                                .executeScript("wp_common.wp_ChangeLine(" + line + "); log(event);");
+                        System.out.println("Line switched by javascript.");
+                    }
+                } catch (Exception e) {
+                    if (debug == true)
+                        e.printStackTrace();
+                    else System.out.println("JavaScript execution error!");
                 }
-            } catch (Exception e) {
-                if (debug == true)
-                    e.printStackTrace();
-                else System.out.println("JavaScript execution error!");
-            }
         }
         return driver;
     }
@@ -387,10 +391,10 @@ public class Methods {
             Thread.sleep(1000);
             System.out.println("Sleep after Line switched.");
             Screen screen = new Screen();
-            if(!(hostName.equalsIgnoreCase("kv1-it-pc-jtest")&&browser.equals("chrome"))) {
-            org.sikuli.script.Pattern phoneNumberField_Sikuli = new org.sikuli.script.Pattern("C:\\SikuliImages\\phoneNumberField_Sikuli.png");
-            screen.wait(phoneNumberField_Sikuli, 10);
-            screen.click(phoneNumberField_Sikuli);
+            if (!(hostName.equalsIgnoreCase("kv1-it-pc-jtest") && browser.equals("chrome"))) {
+                org.sikuli.script.Pattern phoneNumberField_Sikuli = new org.sikuli.script.Pattern("C:\\SikuliImages\\phoneNumberField_Sikuli.png");
+                screen.wait(phoneNumberField_Sikuli, 10);
+                screen.click(phoneNumberField_Sikuli);
             }
             System.out.println("Sikuli clkicked phone number filed.");
             WebElement phoneNumberField = driver.findElement(By.cssSelector("#PhoneNumber"));
@@ -412,6 +416,7 @@ public class Methods {
     public static void openCXphone(int waitTime) throws FindFailed, InterruptedException, IOException {
         System.out.println("openCXphone");
         String hostName = InetAddress.getLocalHost().getHostName();
+        Thread.sleep(1000);
         if (hostName.equalsIgnoreCase("kv1-it-pc-jtest")) {
             App cxphone = App.open("C:\\Program Files (x86)\\3CXPhone\\3CXPhone.exe");
             Thread.sleep(waitTime);
@@ -420,10 +425,14 @@ public class Methods {
             Thread.sleep(waitTime);
         }
 // focus on phone number fieldd first in order to clear it
+        try{
         Screen screen = new Screen();
         org.sikuli.script.Pattern closePhoneWindow = new org.sikuli.script.Pattern("C:\\SikuliImages\\closePhoneWindow.png");
         screen.wait(closePhoneWindow, 10);
         screen.click(closePhoneWindow);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         /*if (hostName.equalsIgnoreCase("kv1-it-pc-jtest")) {
             driver.manage().window().maximize();
         }*/
@@ -492,7 +501,7 @@ public class Methods {
 
             WebElement resultCode = driver.findElement(By.xpath("//td[text()='Удачно']"));
             resultCode.click();
-            Thread.sleep(1000);
+            Thread.sleep(1500);
             WebElement button_Save = driver.findElement(By.cssSelector("#btn_rslt > span.ui-button-text.ui-c"));
             button_Save.click();
         } else {
@@ -549,19 +558,30 @@ public class Methods {
 
     public static WebDriver agentAcceptCall(WebDriver driver, int waitTime) throws InterruptedException {
         System.out.println("agentAcceptCall");
-        WebDriverWait waitForButtonAccept = new WebDriverWait(driver, waitTime);
-        System.out.println("WebDriverWait waitForButtonAccept = new WebDriverWait(driver, waitTime);");
-        waitForButtonAccept.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#btn_preview_accept")));
-        System.out.println("waitForButtonAccept.until(ExpectedConditions.elementToBeClickable(By.cssSelector(\"#btn_preview_accept\")));");
+
         WebElement button_Accept = driver.findElement(By.cssSelector("#btn_preview_accept"));
         System.out.println("WebElement button_Accept = driver.findElement(By.cssSelector(\"#btn_preview_accept\"));");
         //if not wait, CRM card not opened
         Thread.sleep(500);
         if (isIE(driver) == true) {
+            Thread.sleep(2000);
             System.out.println("if(isIE(driver) == true){" + isIE(driver));
-            clickIEelement(driver, button_Accept);
-            System.out.println("clickIEelement(button_Accept);");
+            try{
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("wp_common.wp_Accept();log(event);PrimeFaces.ab({source:'btn_accept'});return false;");
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            //executeJsOnclick(driver, button_Accept);
+
+            //clickIEelement(driver, button_Accept);
+            //System.out.println("clickIEelement(button_Accept);");
+            System.out.println("js.executeScript();");
         } else {
+            WebDriverWait waitForButtonAccept = new WebDriverWait(driver, waitTime);
+            System.out.println("WebDriverWait waitForButtonAccept = new WebDriverWait(driver, waitTime);");
+            waitForButtonAccept.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#btn_preview_accept")));
+            System.out.println("waitForButtonAccept.until(ExpectedConditions.elementToBeClickable(By.cssSelector(\"#btn_preview_accept\")));");
             System.out.println("} else{");
             button_Accept.click();
             System.out.println("button_Accept.click();");
@@ -680,6 +700,29 @@ public class Methods {
         System.out.println("clickIEelement");
         JavascriptExecutor executor = (JavascriptExecutor) driver;
         executor.executeScript("arguments[0].click();", element);
+    }
+
+    public static void switchFocus() {
+        try {
+            Robot r = new Robot();
+            r.keyPress(KeyEvent.VK_ALT);
+            r.keyPress(KeyEvent.VK_TAB);
+            r.delay(100);
+            r.keyRelease(KeyEvent.VK_ALT);
+            r.keyRelease(KeyEvent.VK_TAB);
+        } catch (AWTException e) {
+            // handle
+        }
+    }
+
+    public static void executeJsOnclick(WebDriver driver, WebElement element){
+        try{
+        String script =  element.getAttribute("onclick");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript(script);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

@@ -18,15 +18,22 @@ import java.net.UnknownHostException;
 public class CallOnTwoLines {
     private static final Logger log = Logger.getLogger("Methods");
     /***********CHANGED TO RUN CHROME BROWSER******************/
+    static IEData cdata;
     static ChromeData data;
+
     /***********************************************************/
     static WebDriver driver;
 
 
-    public static void createData() {
+    public static void createData(String browserName) {
+
         log.debug("STARTJENKINS");
         /***********CHANGED TO RUN CHROME BROWSER******************/
-        data = new ChromeData();
+        if (browserName.equals("chrome"))
+            data = new ChromeData();
+        else {
+            //data = new IEData();
+        }
         /***********************************************************/
         data.group = "\\!test_group5_5220";
 
@@ -34,10 +41,12 @@ public class CallOnTwoLines {
         Methods.browser = data.browser;
         /**********************************************/
         Methods.onJenkins = false;
+
     }
 
 
     public static void IELogin() throws InterruptedException, IOException, FindFailed {
+        Methods.openCXphone(100);
         driver = Methods.openWebphoneLoginPage(driver, data.browser, data.webphoneUrl);
         Methods.login(driver, data.method, data.username, data.group);
         Methods.checkStatus(driver, "Available", 30);
@@ -45,8 +54,7 @@ public class CallOnTwoLines {
 
 
     public static WebDriver callOnFirstLine() throws FindFailed, InterruptedException, IOException {
-        Methods.openCXphone(5000);
-        Methods.call(driver, 1, "94949");
+        Methods.call(driver, 1, "94948");
         Methods.cxAnswer();
         return driver;
     }
@@ -59,10 +67,22 @@ public class CallOnTwoLines {
     }
 
     public static void callOnTwoLines() throws InterruptedException, IOException, FindFailed {
-        createData();
+        createData("chrome");
         IELogin();
         callOnFirstLine();
         callOnSecondLine();
+    }
+
+    public static void call() throws InterruptedException, IOException, FindFailed {
+        createData("chrome");
+        IELogin();
+        callOnFirstLine();
+    }
+
+    public static void login(String browserName) throws InterruptedException, IOException, FindFailed {
+        createData(browserName);
+        IELogin();
+
     }
 
     public static void setResultCodeAndCheckAvailableStatus() throws InterruptedException, FindFailed, UnknownHostException, UnsupportedEncodingException {
