@@ -13,12 +13,9 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Screen;
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -27,14 +24,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.LogManager;
 import java.util.regex.Pattern;
 
-import static data.Data.PDUrl;
-import static data.Data.agentChrome;
-import static data.Data.agentPD;
+import static oldClasses.Data.PDUrl;
 import static helpMethods.HelpMethods.handleLogoutWindow;
-import static methods.Methods.driver;
 
 import static methods.Methods.password;
 
@@ -352,7 +345,7 @@ public class Methods {
     public static WebDriver switchLine(WebDriver driver, int line) throws FindFailed, InterruptedException, UnknownHostException {
         System.out.println("switchLine");
         String hostName = InetAddress.getLocalHost().getHostName();
-        if (browser.equals("chrome") && !hostName.equalsIgnoreCase("kv1-it-pc-jtest")) {
+        if (!isIE(driver) && !hostName.equalsIgnoreCase("kv1-it-pc-jtest")) {
             System.out.println("Browser is chrome.");
             WebDriverWait waitForLineElement = new WebDriverWait(driver, 2);
             waitForLineElement.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[id = 'btn_line_" + line + "_span']")));
@@ -410,7 +403,19 @@ public class Methods {
 
         }
         return driver;
+    }
 
+    public static void focusCXphone(int waitTime) throws FindFailed, InterruptedException, IOException {
+        System.out.println("openCXphone");
+        String hostName = InetAddress.getLocalHost().getHostName();
+        Thread.sleep(1000);
+        if (hostName.equalsIgnoreCase("kv1-it-pc-jtest")) {
+            App cxphone = App.open("C:\\Program Files (x86)\\3CXPhone\\3CXPhone.exe");
+            Thread.sleep(waitTime);
+        } else {
+            App cxphone = App.open("C:\\Program Files (x86)\\3CXPhone\\3CXPhone.exe");
+            Thread.sleep(waitTime);
+        }
     }
 
     public static void openCXphone(int waitTime) throws FindFailed, InterruptedException, IOException {
@@ -688,7 +693,6 @@ public class Methods {
     public static boolean isIE(WebDriver driver) {
         System.out.println("isIE");
         Capabilities cap = ((RemoteWebDriver) driver).getCapabilities();
-   /*     Capabilities cap = ((RemoteWebDriver) driver).getCapabilities();*/
         String browserName = cap.getBrowserName().toLowerCase();
         System.out.println(browserName);
         if (browserName.equals("internet explorer"))

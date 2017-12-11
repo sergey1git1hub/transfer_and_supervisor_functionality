@@ -3,17 +3,34 @@
 
 <suite name="regression" verbose="10">
 
-    <!--<test name="Transfer">
+  <!--  <test name="Transfer">
         <classes>
             <class name="Methods"/>
             <class name="Transfer"/>
         </classes>
     </test>-->
 
-    <!--<test name="Transfer">
+  <!--  <test name="Transfer">
         <classes>
             <class name="Methods"/>
             <class name="Transfer">
+                <methods>-->
+                    <!--<include name="blindTransferToNumber"/>
+                    <include name="attendedTransferToNumber"/>-->
+                    <!--<include name="blindTransferToAgent"/>-->
+                  <!--  <include name="attendedTransferToAgent"/>
+                    <include name="blindTransferToQueue"/>
+                    <include name="attendedTransferToQueue"/>
+                    <include name="blindTransferToPoint"/>-->
+  <!--              </methods>
+            </class>
+        </classes>
+    </test>-->
+
+    <test name="TransferRefactored">
+        <classes>
+            <class name="Methods"/>
+            <class name="TransferRefactored">
                 <methods>
                     <include name="blindTransferToNumber"/>
                     <include name="attendedTransferToNumber"/>
@@ -25,73 +42,23 @@
                 </methods>
             </class>
         </classes>
-    </test>-->
-
-    <test name="Supervisor">
+    </test>
+    <!--<test name="Supervisor">
         <classes>
             <class name="Methods"/>
             <class name="Supervisor">
-                <methods>
+                <methods>-->
                    <!-- <include name="call"/>-->
-                    <!--<include name="listen"/>-->
-                    <include name="talkToUser"/>
-                  <!--  <include name="bargeIn"/>
-                    <include name="logUserOut"/>
-                    <include name="sendNotification"/>
-                    <include name="assist"/>
-                    <include name="changeStatus"/>
--->
-                </methods>
+                    <!--<include name="listen"/>
+                    <include name="talkToUser"/>-->
+                   <!-- <include name="bargeIn"/>-->
+                    <!--<include name="logUserOut"/>-->
+                    <!--<include name="sendNotification"/>-->
+                   <!-- <include name="assist"/>-->
+                    <!--<include name="changeStatus"/>-->
+               <!-- </methods>
             </class>
         </classes>
-    </test>
+    </test>-->
 
-<!--   <test name="TwoLinesAgentHangup">
-        <classes>
-            <class name="Methods"/>
-            <class name="TwoLinesAgentHangup"/>
-        </classes>
-    </test>-->
-     <!-- <test name="TwoLinesClientHangup">
-          <classes>
-              <class name="TwoLinesClientHangup"/>
-          </classes>
-      </test>
--->
-    <!-- <test name="PDPreviewFreeCallIE">
-        <classes>
-            <class name="PDPreviewFreeCall">
-                <methods>
-                    <include name="pDPreviewFreeCall"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-    <test name="PDPreviewFreeAUX">
-        <classes>
-            <class name="PDPreviewFreeAUX">
-                <methods>
-                    <include name="pDPreviewFreeAUX"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-    <test name="PDProgressiveReleasedAgentHangup">
-        <classes>
-            <class name="PDProgressiveReleasedAgentHangup">
-                <methods>
-                    <include name="IELogin"/>
-                    <include name="changeStatusToAUX"/>
-                    <include name="runSQLQuery"/>
-                    <include name="waitForCallOnClientSide"/>
-                    <include name="noIncomingCallToClient"/>
-                    <include name="changeStatusToAvailable"/>
-                    <include name="waitForCallOnClientSide2"/>
-                    <include name="receiveIncomingCallToAgent"/>
-                    <include name="agentHangup"/>
-                    <include name="setResultCodeAndCheckAvailableStatus"/>
-                </methods>
-            </class>
-        </classes>
-    </test>-->
 </suite>

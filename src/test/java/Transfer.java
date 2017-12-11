@@ -24,14 +24,34 @@ public class Transfer {
     static boolean fast = false;
     static int delay = 2;
 
-    @Test
-    public static void blindTransferToNumber() throws InterruptedException, IOException, FindFailed {
+    public static void createCallAndOpenTransferWindow() throws InterruptedException, FindFailed, IOException {
         CallOnTwoLines.call();
         driver = CallOnTwoLines.driver;
         data = CallOnTwoLines.data;
         Thread.sleep(1000);
         WebElement button_transfer = driver.findElement(By.cssSelector("#btn_transfer"));
         button_transfer.click();
+    }
+
+    public static void openIE() throws InterruptedException, FindFailed, IOException {
+        driver2 = Methods.openWebphoneLoginPage(driver2, "ie", "http://172.21.24.109/gbwebphone/");
+        Methods.login(driver2, "usual", "81049", "\\!test_group5_5220");
+        Methods.checkStatus(driver2, "Available", 60);
+    }
+
+    public static void selectAttendedTransfer() throws InterruptedException {
+        WebElement selectTransfer = driver.findElement(By.cssSelector("#transfer_type > div.ui-selectonemenu-trigger.ui-state-default.ui-corner-right"));
+        selectTransfer.click();
+        if (!fast)
+            Thread.sleep(1000);
+        WebElement attendedTransfer = driver.findElement(By.cssSelector("#transfer_type_panel > div > ul > li:nth-child(2)"));
+        attendedTransfer.click();
+    }
+
+
+    @Test
+    public static void blindTransferToNumber() throws InterruptedException, IOException, FindFailed {
+        createCallAndOpenTransferWindow();
         WebElement transferNumber = driver.findElement(By.cssSelector("#transfer_number"));
         transferNumber.sendKeys("94948");
         WebElement button_form_transfer = driver.findElement(By.cssSelector("#btn_trnsfr"));
@@ -55,12 +75,7 @@ public class Transfer {
 
      @Test
     public static void attendedTransferToNumber() throws InterruptedException, IOException, FindFailed {
-        CallOnTwoLines.call();
-        driver = CallOnTwoLines.driver;
-        data = CallOnTwoLines.data;
-        Thread.sleep(1000);
-        WebElement button_transfer = driver.findElement(By.cssSelector("#btn_transfer"));
-        button_transfer.click();
+         createCallAndOpenTransferWindow();
         if (!fast)
             Thread.sleep(1000);
         WebElement transferNumber = driver.findElement(By.cssSelector("#transfer_number"));
@@ -107,21 +122,11 @@ public class Transfer {
 
     @Test
     public static void blindTransferToAgent() throws InterruptedException, IOException, FindFailed {
-
-
         //OPEN IE
-        driver2 = Methods.openWebphoneLoginPage(driver2, "ie", "http://172.21.24.109/gbwebphone/");
-        Methods.login(driver2, "usual", "81049", "\\!test_group5_5220");
-        Methods.checkStatus(driver2, "Available", 60);
-     /*   Thread.sleep(10000);
-        driver2.manage().window().maximize();*/
+        openIE();
         //OPEN CHROME
-        CallOnTwoLines.call();
-        driver = CallOnTwoLines.driver;
-        data = CallOnTwoLines.data;
-        Thread.sleep(1000);
-        WebElement button_transfer = driver.findElement(By.cssSelector("#btn_transfer"));
-        button_transfer.click();
+        createCallAndOpenTransferWindow();
+
         WebElement transferNumber = driver.findElement(By.cssSelector("#transfer_number"));
         transferNumber.sendKeys("81049");
         if (!fast)
@@ -131,23 +136,12 @@ public class Transfer {
         if (!fast)
             Thread.sleep(2000);
         //SWITCH TO IE
-        /*driver2.manage().window().maximize();
-        ((JavascriptExecutor) driver2).executeScript("window.focus();");*/
         Methods.switchFocus();
 
         Methods.checkStatus(driver2, "Ringing", 10);
         Methods.agentAcceptCall(driver2, 20);
         System.out.println("CALL ACCEPTED.");
 
-        /*Screen screen = new Screen();
-        org.sikuli.script.Pattern button_Accept = new org.sikuli.script.Pattern("C:\\SikuliImages\\button_Accept.png");
-        screen.wait(button_Accept, 10);
-        screen.click(button_Accept);*/
-
-        /*WebElement button_Accept = driver2.findElement(By.cssSelector("#btn_preview_accept"));
-        Methods.clickIEelement(driver2, button_Accept);
-        System.out.println("clickIEelement(button_Accept);");*/
-        //Methods.checkStatus(driver2, "Incall", 5);
         Methods.checkStatus(driver2, "Ringing", 5);
         Thread.sleep(5000);
         Methods.agentHangup(driver2, 1);
@@ -164,24 +158,11 @@ public class Transfer {
     @Test
     public static void attendedTransferToAgent() throws InterruptedException, IOException, FindFailed {
         //OPEN IE
-
-        driver2 = Methods.openWebphoneLoginPage(driver2, "ie", "http://172.21.24.109/gbwebphone/");
-        Methods.login(driver2, "usual", "81049", "\\!test_group5_5220");
-        Methods.checkStatus(driver2, "Available", 60);
-
+        openIE();
         //OPEN CHROME
-        CallOnTwoLines.call();
-        driver = CallOnTwoLines.driver;
-        data = CallOnTwoLines.data;
-        Thread.sleep(1000);
-        WebElement button_transfer = driver.findElement(By.cssSelector("#btn_transfer"));
-        button_transfer.click();
-        WebElement selectTransfer = driver.findElement(By.cssSelector("#transfer_type > div.ui-selectonemenu-trigger.ui-state-default.ui-corner-right"));
-        selectTransfer.click();
-        if (!fast)
-            Thread.sleep(1000);
-        WebElement attendedTransfer = driver.findElement(By.cssSelector("#transfer_type_panel > div > ul > li:nth-child(2)"));
-        attendedTransfer.click();
+        createCallAndOpenTransferWindow();
+        selectAttendedTransfer();
+
         WebElement transferNumber = driver.findElement(By.cssSelector("#transfer_number"));
         transferNumber.sendKeys("81049");
         WebElement button_form_transfer = driver.findElement(By.cssSelector("#btn_trnsfr"));
@@ -192,10 +173,7 @@ public class Transfer {
         Methods.switchFocus();
 
         Methods.checkStatus(driver2, "Ringing", 10);
-        Screen screen = new Screen();
-        org.sikuli.script.Pattern button_Accept = new org.sikuli.script.Pattern("C:\\SikuliImages\\button_Accept.png");
-        screen.wait(button_Accept, 10);
-        screen.click(button_Accept);
+        Methods.agentAcceptCall(driver2, 10);
         Methods.checkStatus(driver2, "Ringing", 5);
 
         //AGENT WHO MADE TRANSFER ENDS THE CALL
@@ -221,12 +199,7 @@ public class Transfer {
     //call to queue 33333
     @Test
     public static void blindTransferToQueue() throws InterruptedException, IOException, FindFailed {
-        CallOnTwoLines.call();
-        driver = CallOnTwoLines.driver;
-        data = CallOnTwoLines.data;
-        Thread.sleep(1000);
-        WebElement button_transfer = driver.findElement(By.cssSelector("#btn_transfer"));
-        button_transfer.click();
+        createCallAndOpenTransferWindow();
         WebElement transferNumber = driver.findElement(By.cssSelector("#transfer_number"));
         transferNumber.sendKeys("33333");
         WebElement button_form_transfer = driver.findElement(By.cssSelector("#btn_trnsfr"));
@@ -255,17 +228,10 @@ public class Transfer {
     public static void attendedTransferToQueue() throws InterruptedException, IOException, FindFailed {
         //OPEN IE
 
-        driver2 = Methods.openWebphoneLoginPage(driver2, "ie", "http://172.21.24.109/gbwebphone/");
-        Methods.login(driver2, "usual", "81049", "\\!test_group5_5220");
-        Methods.checkStatus(driver2, "Available", 60);
+        openIE();
 
         //OPEN CHROME
-        CallOnTwoLines.call();
-        driver = CallOnTwoLines.driver;
-        data = CallOnTwoLines.data;
-        Thread.sleep(1000);
-        WebElement button_transfer = driver.findElement(By.cssSelector("#btn_transfer"));
-        button_transfer.click();
+        createCallAndOpenTransferWindow();
         WebElement selectTransfer = driver.findElement(By.cssSelector("#transfer_type > div.ui-selectonemenu-trigger.ui-state-default.ui-corner-right"));
         selectTransfer.click();
         if (!fast)
@@ -310,12 +276,7 @@ public class Transfer {
 
     @Test
     public static void blindTransferToPoint() throws InterruptedException, IOException, FindFailed {
-        CallOnTwoLines.call();
-        driver = CallOnTwoLines.driver;
-        data = CallOnTwoLines.data;
-        Thread.sleep(1000);
-        WebElement button_transfer = driver.findElement(By.cssSelector("#btn_transfer"));
-        button_transfer.click();
+        createCallAndOpenTransferWindow();
 
         WebElement transfer_point = driver.findElement(By.cssSelector("#peerTransferTable_data"));
         transfer_point.click();
@@ -343,17 +304,10 @@ public class Transfer {
    // @Test
     public static void attendedTransferToPoint() throws InterruptedException, IOException, FindFailed {
 
-        driver2 = Methods.openWebphoneLoginPage(driver2, "ie", "http://172.21.24.109/gbwebphone/");
-        Methods.login(driver2, "usual", "81049", "\\!test_group5_5220");
-        Methods.checkStatus(driver2, "Available", 60);
+        openIE();
 
         //OPEN CHROME
-        CallOnTwoLines.call();
-        driver = CallOnTwoLines.driver;
-        data = CallOnTwoLines.data;
-        Thread.sleep(1000);
-        WebElement button_transfer = driver.findElement(By.cssSelector("#btn_transfer"));
-        button_transfer.click();
+        createCallAndOpenTransferWindow();
         WebElement selectTransfer = driver.findElement(By.cssSelector("#transfer_type > div.ui-selectonemenu-trigger.ui-state-default.ui-corner-right"));
         selectTransfer.click();
         if (!fast)

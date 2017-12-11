@@ -5,12 +5,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.sikuli.script.FindFailed;
 
 import java.io.File;
 import java.io.FileFilter;
 
-import static data.Data.webchatServerUrl;
+import static oldClasses.Data.webchatServerUrl;
 import static org.testng.Assert.assertEquals;
 
 /**

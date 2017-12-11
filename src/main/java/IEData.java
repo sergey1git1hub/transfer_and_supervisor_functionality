@@ -7,8 +7,15 @@ import org.openqa.selenium.WebDriver;
 /*Data data = new Data();
 data.username = "";
 data.browser = "chrome";*/
+
 public class IEData extends Data {
-    String browser = "IE";
-    String webphoneUrl = "http://172.21.24.109/gbwebphone/";
-    String method = "usual";
+    public IEData(){
+    this.webphoneUrl = "http://172.21.24.109/gbwebphone/";
+    this.method = "usual";
+    this.browser = "ie";
+    }
+    public void printData(){
+        System.out.println("IEData");
+        super.printData();
+    }
 }

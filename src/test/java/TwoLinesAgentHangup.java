@@ -6,8 +6,6 @@ import org.testng.annotations.*;
 
 import java.io.IOException;
 
-import static data.Data.agentChrome;
-
 /**
  * Created by SChubuk on 04.10.2017.
  */
